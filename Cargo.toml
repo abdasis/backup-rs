@@ -1,0 +1,43 @@
+[package]
+name = "backup-rs"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+description = "Async backup library for Rust: file archives, database dumps, retention policies, health monitoring, and safe restore"
+license = "MIT"
+repository = "https://github.com/abdasis/backup-rs"
+readme = "README.md"
+keywords = ["backup", "archive", "retention", "restore", "async"]
+categories = ["filesystem", "command-line-utilities"]
+
+[lib]
+name = "backup"
+
+[dependencies]
+aes-gcm = { version = "0.10", optional = true }
+chrono = { version = "0.4", features = ["serde"] }
+flate2 = "1"
+globset = "0.4"
+hmac = { version = "0.12", optional = true }
+pbkdf2 = { version = "0.12", features = ["hmac"], optional = true }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = { version = "0.10", optional = true }
+tar = "0.4"
+thiserror = "2"
+tokio = { version = "1", features = ["fs", "rt", "sync"] }
+uuid = { version = "1", default-features = false, features = ["v4"] }
+walkdir = "2"
+
+[features]
+default = ["database", "memory"]
+database = ["tokio/process"]
+encryption = ["dep:aes-gcm", "dep:hmac", "dep:pbkdf2", "dep:sha2"]
+memory = []
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "fs", "process", "sync"] }
+
+[[example]]
+name = "basic"
+required-features = ["memory"]
